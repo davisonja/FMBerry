@@ -2,6 +2,7 @@
 FMBerry
 =======
 > Written by Tobias Mädel (t.maedel@alfeld.de)
+> Updated by Julian Davison (julian@davison.org.nz)
 
 > http://tbspace.de
 
@@ -14,7 +15,7 @@ FMBerry is a piece of software that allows you to transmit FM radio with your Ra
 How does it work? 
 -------------
 It uses the Sony-Ericsson MMR-70 transmitter, which was originally intended for use with Sonys Walkman cellphones from early 2000s.
-You can get these for really cheap from ebay or Amazon (link below). (Less than 1 Euro with shipping in Germany)
+You can get these really cheap from ebay or Amazon (link below). (Less than 1 Euro with shipping in Germany)
 
 What do I need to build this? 
 -------------
@@ -28,7 +29,7 @@ The hardware is explained here:
 
 Installation
 -------------
-This software was developed under Raspbian Wheezy 2013-02-09.
+This software was developed under Raspbian Wheezy.
 ###Step 1: Enabling I²C
 
 Open raspi-blacklist.conf:
@@ -70,6 +71,8 @@ Older devices (beta, alpha, early 256MB Model B's) have it connected up to /dev/
 
 ###Step 4: Checking the hardware
 
+It's worth adding your user to the ``i2c`` group in order to be able to access the i2c device without being ``root``
+
 You can check your wiring with the following command:
 
 ``i2cdetect -y 1``
@@ -90,7 +93,7 @@ If you connect you MMR-70 to I²C bus 0 on Raspberry Pi rev2 make sure that head
 To build the software execute the following commands (in your homefolder):
 
 ```
-git clone https://github.com/Manawyrm/FMBerry/
+git clone https://github.com/davisonja/FMBerry/
 cd FMBerry
 ```
 
