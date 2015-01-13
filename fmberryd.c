@@ -45,11 +45,11 @@ static int start_daemon = 1;
 int main(int argc, char **argv)
 {
 	//Check if user == root
-	if(geteuid() != 0)
-	{
-	  puts("Please run this software as root!");
-	  exit(EXIT_FAILURE);
-	}
+//	if(geteuid() != 0)
+//	{
+//	  puts("Please run this software as root!");
+//	  exit(EXIT_FAILURE);
+//	}
 
 	// check for non-daemon mode for debugging
 	for(int i = 1; i < argc; i++) {
