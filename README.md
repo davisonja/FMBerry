@@ -22,7 +22,7 @@ If you can't seem to get one, contact me via Mail (fmberry@tbspace.de), I manage
 What do I need to build this? 
 -------------
 * MMR-70 transmitter
-* Raspberry Pi (Model A/B - 256MB or 512MB)
+* Raspberry Pi (compatible & tested with every Pi, Model Beta, A, B, B+, 2, Zero, 3)
 * Soldering equipment (soldering iron and some solder)
 * Cable for connecting to your Raspberry Pis GPIO port (old IDE cable does work fine!)
 
@@ -31,15 +31,11 @@ The hardware is explained here:
 
 Installation
 -------------
-<<<<<<< HEAD
-This software was developed under Raspbian Wheezy.
-=======
 This software was developed under Raspbian Wheezy 2013-02-09.
 
 ## Arch Linux users: [AUR - fmberry-rpi-git](https://aur.archlinux.org/packages/fmberry-rpi-git/)
 
->>>>>>> upstream/master
-###Step 1: Enabling I²C
+### Step 1: Enabling I²C
 
 Open raspi-blacklist.conf:
 
@@ -60,7 +56,7 @@ Then again, Save with Ctrl+O and then close nano with Ctrl+X.
 
 Please reboot your Raspberry after this step. 
 
-###Step 2: Installing I²C tools and dependencies for the build
+### Step 2: Installing I²C tools and dependencies for the build
 
 First update your local package repository with
 ``sudo apt-get update``
@@ -68,7 +64,7 @@ First update your local package repository with
 then install all needed software with the following command:
 ``sudo apt-get install i2c-tools build-essential git libconfuse-dev``
  
-###Step 3: Finding out your hardware revision
+### Step 3: Finding out your hardware revision
 
 Run 
 ``cat /proc/cpuinfo | grep "CPU revision"``
@@ -78,7 +74,7 @@ All Raspberry Pi's with a revision newer than rev. 2 have their i2c port connect
 
 Older devices (beta, alpha, early 256MB Model B's) have it connected up to /dev/i2c-0. 
 
-###Step 4: Checking the hardware
+### Step 4: Checking the hardware
 
 It's worth adding your user to the ``i2c`` group in order to be able to access the i2c device without being ``root``
 
@@ -98,7 +94,7 @@ If you connect you MMR-70 to I²C bus 0 on Raspberry Pi rev2 make sure that head
 
 ![Output of i2cdetect](http://tbspace.de/holz/csuqzygpwb.png)
 
-###Step 5: Building the software
+### Step 5: Building the software
 To build the software execute the following commands (in your homefolder):
 
 ```
@@ -111,7 +107,7 @@ If you have got an old revision board, please open fmberryd.c and change the RPI
 ``make``
 
 Compiling the software will take a couple of seconds.
-###Step 6: Installing the software
+### Step 6: Installing the software
 FMBerry is essentially a daemon called fmberryd.
 To install it into your system path type 
 ```sudo make install```. 
@@ -141,14 +137,14 @@ It currently allows the following commands:
 * ``ctlfmberry stop`` - Stop FMBerry daemon
 
 That's it! :)
-###Step 7: Debugging
+### Step 7: Debugging
 FMBerry writes debugging output to /var/log/syslog.
 
 You can watch the information by running ``ctlfmberry log``. It's essentially just a ```cat /var/log/syslog | grep fmberryd```
 
 It will tell you what's wrong. 
 
-###Updating the software
+### Updating the software
 Please check for new dependencies. You can safely just run the ```apt-get install``` command again. It will only install new dependencies if necessary.
 
 First stop the daemon by typing ```/etc/init.d/fmberry stop```. 
@@ -156,10 +152,10 @@ First stop the daemon by typing ```/etc/init.d/fmberry stop```.
 Then run ```git pull``` followed by a ```make``` and a ```sudo make install```.
 
 You can then start FMBerry again with ```/etc/init.d/fmberry start```.
-##Notes
+## Notes
 * WARNING! I am not a professional C programmer. Please expect this software to have major security flaws. Please don't expose it's control port to the internet! I'm fairly certain that this software is vulnerable to buffer overflows. 
 * If you are a C programmer, please help by securing this software and sending a pull request. 
-* The Daemon itself is essentially a simple TCP server. It is listening to Port 42516. (set in fmberryd.h) You can control it by sending the exact same commands you would give to ctlfmberry.
+* The Daemon itself is essentially a simple TCP server. It is listening to Port 42516. (set in fmberry.conf) You can control it by sending the exact same commands you would give to ctlfmberry.
 * For information on How to control the Daemon have a look into ctlfmberry. It's a simple shell script.
 
 * Feel free to contact me: t.maedel@alfeld.de (english and german) 
@@ -170,7 +166,7 @@ https://github.com/Manawyrm/FMBerryRDSMPD (streaming of MPD title data via RDS)
 https://github.com/akkinitsch/FMBerryRemote (streaming of internet radio streams, controllable via Webinterface)
 http://achilikin.blogspot.de/2013/06/sony-ericsson-mmr-70-transmitter-led.html (enabling the LED on the transmitter to be software controllable)
 
-##Common problems
+## Common problems
 __The daemon does not show anything.__
 
 That's normal. You have to use ./ctlfmberry to control the daemon.
@@ -183,6 +179,23 @@ __I am getting compile errors.__
 
 Did you install all dependencies? (All lines with apt-get)
 
-__The transmissions dies after a couple of minutes.__
+__The transmission dies after a couple of minutes.__
 
 You didn't disable the internal processor of the MMR70. Do this by connecting TP18 to GND.
+
+__The power supply of the raspberry pi shorts out/there are no lights anymore___
+
+There is a short circuit. Probably caused by a wiring fault or by using an 80pin IDE cable for connecting the FMBerry.
+
+
+__Alternative linux distributions don't detect the I2C bus (ArchLinux, OpenWRT, OSMC)__
+
+Linux 3.18 introduced a new feature called Device Tree support. To get the I²C Bus working, you need to put this configuration at the end of /boot/config.txt (change the first parameter according to the RPi you have): 
+```
+device_tree=bcm2708-rpi-b-plus.dtb
+device_tree_param=i2c1=on
+device_tree_param=spi=on
+```
+
+
+Thanks to Daniel for the solution to that problem! 
